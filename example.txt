@@ -1,0 +1,19 @@
+(* This is a comment *)
+(* This is a
+multiline comment *)
+program AVERAGE
+	SUM, VALUE, AVERAGE, I : INTEGER
+BEGIN
+	12monkeys
+	monkeys12
+	ONETWOTHREEFOURFIVESIXSEVENEIGHTNINE
+	SUM := 0;
+	AVERAGE := 0;
+	FOR I := 1 TO 100 DO
+		BEGIN
+			READ(VALUE);
+			SUM := SUM + VALUE;
+		END;
+	AVERAGE := SUM DIV 100;
+	WRITE(AVERAGE)
+END.
