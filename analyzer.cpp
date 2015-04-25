@@ -61,7 +61,8 @@ bool g_prog(vector<TokenLine>& v)
 	
 	// match <stmt-list>
 	if (g_stmt_list(v,i))
-		i++;
+		// i++;
+		cout << "end of stmt-list" << endl;
 	else
 	{
 		cout << "Statement List Error on line " << v[i].line << endl;
@@ -180,14 +181,60 @@ bool g_id_list(vector<TokenLine>& v, int& i)
 bool g_stmt_list(vector<TokenLine>& v, int& i)
 {
 	// code
+	bool temp = false;
+	
+	// change temp to true only when there's at least one id
+	if (g_stmt(v,i))
+	{
+		temp = true;
+		//i++;
+	}
+	
+	// there could be more ids, so let's check
+	while (v[i].token != END && v[i].token != ENDP)
+	{
+		// must be id THEN comma
+		if (v[i].token == SEMICOLON)
+			i++;
+		if (g_stmt(v,i))
+			i++;
+			
+		//cout << temp << endl;
+	}
+	
+	return temp;
 }
 
 bool g_stmt(vector<TokenLine>& v, int& i)
 {
-	if (g_assign(v,i) || g_read(v,i) || g_write(v,i) || g_for(v,i))
-		return true;
-	else
-		return false;
+	if (v[i].token == IDENTIFIER)
+	{
+		if (g_assign(v,i))
+			return true;
+		else
+			return false;
+	}
+	if (v[i].token == READ)
+	{
+		if (g_read(v,i))
+			return true;
+		else
+			return false;
+	}
+	if (v[i].token == WRITE)
+	{
+		if (g_write(v,i))
+			return true;
+		else
+			return false;;
+	}
+	if (v[i].token == FOR)
+	{
+		if (g_for(v,i))
+			return true;
+		else
+			return false;
+	}	
 }
 
 bool g_assign(vector<TokenLine>& v, int& i)
@@ -209,11 +256,69 @@ bool g_assign(vector<TokenLine>& v, int& i)
 bool g_exp(vector<TokenLine>& v, int& i)
 {
 	// code
+	bool temp = false;
+	
+	if (g_term(v,i))
+	{
+		temp = true;
+		i++;
+		cout << v[i].token << endl;
+	}
+	
+	if (v[i].token == PLUS || v[i].token == MINUS)
+	{
+		// there could be more ids, so let's check
+		while (v[i].token != SEMICOLON)
+		{
+			// must be id THEN comma
+			if (v[i].token == PLUS || v[i].token == MINUS)
+				i++;
+			else
+				temp = false;
+			if (g_term(v,i))
+				i++;
+			else
+				temp = false;
+		}
+	}
+		
+	return temp;
 }
 
 bool g_term(vector<TokenLine>& v, int& i)
 {
 	// code
+	bool temp = false;
+	
+	if (g_factor(v,i))
+	{
+		temp = true;
+		//i++;
+	}
+	
+	// there could be more ids, so let's check
+	if (v[i+1].token == TIMES || v[i+1].token == DIV)
+	{
+		i++;
+		while (v[i].token != SEMICOLON)
+		{
+			// must be id THEN comma
+			if (v[i].token == TIMES || v[i].token == DIV )
+				i++;
+			else
+				temp = false;
+			if (g_factor(v,i))
+				i++;
+			else
+				temp = false;
+				
+			//cout << i << " " << v[i].token << endl;
+		}
+		cout << i << " " << v[i].token << " " << v[i].line << endl;
+		i--;
+	}
+		
+	return temp;
 }
 
 bool g_factor(vector<TokenLine>& v, int& i)
@@ -238,24 +343,163 @@ bool g_factor(vector<TokenLine>& v, int& i)
 bool g_read(vector<TokenLine>& v, int& i)
 {
 	// code
+	if (v[i].token == READ)
+	{
+		cout << "called" << endl;
+		i++;
+	}
+	else
+		return false;
+	if (v[i].token == LEFTPAREN)
+	{
+		cout << "called" << endl;
+		i++;
+	}
+	else
+		return false;
+	if (g_id_list(v,i))
+	{
+		cout << "called" << endl;
+		if (v[i].token == RIGHTPAREN)
+		{
+			i++;
+			return true;
+		}
+		else
+			return false;
+	}
+	else
+		return false;
 }
 
 bool g_write(vector<TokenLine>& v, int& i)
 {
 	// code
+	if (v[i].token == WRITE)
+	{
+		cout << "walled" << endl;
+		i++;
+	}
+	else
+		return false;
+	if (v[i].token == LEFTPAREN)
+	{
+		cout << "walled" << endl;
+		i++;
+	}
+	else
+		return false;
+	if (g_id_list(v,i))
+	{
+		cout << "walled" << endl;
+		if (v[i].token == RIGHTPAREN)
+		{
+			i++;
+			return true;
+		}
+		else
+			return false;
+	}
+	else
+		return false;
 }
 
 bool g_for(vector<TokenLine>& v, int& i)
 {
-	// code
+	if (v[i].token == FOR)
+	{
+		i++;
+		cout << v[i].token << endl;
+	}
+	else
+		return false;
+	if (g_index_exp(v,i))
+		cout << "go" << endl;
+	else
+		return false;
+	if (v[i].token == DO)
+	{
+		i++;
+		cout << v[i].token << endl;
+	}
+	else
+	{
+		cout << "For loop " << v[i].token << endl;
+		return false;
+	}
+	if (g_body(v,i))
+	{
+		cout << "Okay it works here" << endl;
+		return true;
+	}
+	else
+	{
+		cout << "Okay something's wrong" << endl;
+		return false;
+	}
 }
 
 bool g_index_exp(vector<TokenLine>& v, int& i)
 {
-	// code
+	if (v[i].token == IDENTIFIER)
+	{
+		cout << v[i].token << endl;
+		i++;
+	}
+	else
+		return false;
+	if (v[i].token == EQUALS)
+	{
+		cout << v[i].token << endl;
+		i++;
+	}
+	else
+		return false;
+	if (g_exp(v,i))
+	{
+		cout << v[i].token << endl;
+		//i++;
+	}
+	else
+		return false;
+	if (v[i].token == TO)
+	{
+		cout << v[i].token << endl;
+		i++;
+		cout << v[i].token << endl;
+	}
+	else
+		return false;
+	if (g_exp(v,i))
+	{
+		cout << "Yay" << endl;
+		cout << v[i].token << endl;
+		return true;
+	}
+	else
+		return false;
 }
 
 bool g_body(vector<TokenLine>& v, int& i)
 {
 	// code
+	cout << "Aye" << endl;
+	if (v[i].token == BEGIN)
+	{
+		i++;
+		cout << "Aye" << endl;
+		if (g_stmt_list(v,i))
+		{
+			cout << "Aye" << endl;
+			if (v[i].token == END)
+			{
+				cout << "Aye" << endl;
+				return true;
+			}
+		}
+	}
+	else if (g_stmt(v,i))
+		return true;
+	
+	return false;
 }

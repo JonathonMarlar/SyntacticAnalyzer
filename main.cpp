@@ -199,7 +199,7 @@ void ProcessBuffer(string filename)
 						}
 					case 'W':
 						{
-							token = getToken(temp, "WRITE", BEGIN);
+							token = getToken(temp, "WRITE", WRITE);
 							break;
 						}
 					case 'T':
