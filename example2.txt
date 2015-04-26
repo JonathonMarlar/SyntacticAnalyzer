@@ -1,0 +1,8 @@
+PROGRAM ADD
+VAR
+	SUM : INTEGER
+BEGIN
+	SUM := 0;
+	SUM := SUM + 3;
+	SUM := SUM * 4 DIV 5;
+END.

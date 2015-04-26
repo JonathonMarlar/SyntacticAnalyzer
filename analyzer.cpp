@@ -11,6 +11,9 @@ g_prog:
 */
 bool g_prog(vector<TokenLine>& v)
 {
+	// pretty printer
+	cout << endl << "Syntactic Analyzer:" << endl;
+	
 	// iterator
 	int i = 0;
 	
@@ -61,8 +64,9 @@ bool g_prog(vector<TokenLine>& v)
 	
 	// match <stmt-list>
 	if (g_stmt_list(v,i))
-		// i++;
-		cout << "end of stmt-list" << endl;
+	{
+		// do nothing
+	}	
 	else
 	{
 		cout << "Statement List Error on line " << v[i].line << endl;
@@ -79,6 +83,10 @@ bool g_prog(vector<TokenLine>& v)
 	}
 }
 
+/*
+g_prog_name:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_prog_name(vector<TokenLine>& v, int& i)
 {
 	// code
@@ -88,6 +96,10 @@ bool g_prog_name(vector<TokenLine>& v, int& i)
 		return false;
 }
 
+/*
+g_dec_list:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_dec_list(vector<TokenLine>& v, int& i)
 {
 	bool temp = false;
@@ -120,10 +132,18 @@ bool g_dec_list(vector<TokenLine>& v, int& i)
 		
 	return temp;
 }
+
+
+/*
+g_dec:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_dec(vector<TokenLine>& v, int& i)
 {
 	if (g_id_list(v,i))
-		cout << "OKda" << endl;
+	{
+		// do nothing
+	}
 	else
 	{
 		cout << "Error: not an id-list for <dec> on line " << v[i].line << endl;
@@ -145,11 +165,21 @@ bool g_dec(vector<TokenLine>& v, int& i)
 	}
 }
 
+
+/*
+g_type:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_type(vector<TokenLine>& v, int& i)
 {
 	return v[i].token == INTEGER;
 }
 
+
+/*
+g_id_list:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_id_list(vector<TokenLine>& v, int& i)
 {
 	bool temp = false;
@@ -178,6 +208,11 @@ bool g_id_list(vector<TokenLine>& v, int& i)
 	return temp;
 }
 
+
+/*
+g_stmt_list:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_stmt_list(vector<TokenLine>& v, int& i)
 {
 	// code
@@ -198,13 +233,16 @@ bool g_stmt_list(vector<TokenLine>& v, int& i)
 			i++;
 		if (g_stmt(v,i))
 			i++;
-			
-		//cout << temp << endl;
 	}
 	
 	return temp;
 }
 
+
+/*
+g_stmt:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_stmt(vector<TokenLine>& v, int& i)
 {
 	if (v[i].token == IDENTIFIER)
@@ -237,6 +275,11 @@ bool g_stmt(vector<TokenLine>& v, int& i)
 	}	
 }
 
+
+/*
+g_assign:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_assign(vector<TokenLine>& v, int& i)
 {
 	if (v[i].token == IDENTIFIER)
@@ -253,6 +296,11 @@ bool g_assign(vector<TokenLine>& v, int& i)
 		return false;
 }
 
+
+/*
+g_exp:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_exp(vector<TokenLine>& v, int& i)
 {
 	// code
@@ -262,7 +310,6 @@ bool g_exp(vector<TokenLine>& v, int& i)
 	{
 		temp = true;
 		i++;
-		cout << v[i].token << endl;
 	}
 	
 	if (v[i].token == PLUS || v[i].token == MINUS)
@@ -285,6 +332,11 @@ bool g_exp(vector<TokenLine>& v, int& i)
 	return temp;
 }
 
+
+/*
+g_term:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_term(vector<TokenLine>& v, int& i)
 {
 	// code
@@ -293,7 +345,6 @@ bool g_term(vector<TokenLine>& v, int& i)
 	if (g_factor(v,i))
 	{
 		temp = true;
-		//i++;
 	}
 	
 	// there could be more ids, so let's check
@@ -311,16 +362,18 @@ bool g_term(vector<TokenLine>& v, int& i)
 				i++;
 			else
 				temp = false;
-				
-			//cout << i << " " << v[i].token << endl;
 		}
-		cout << i << " " << v[i].token << " " << v[i].line << endl;
 		i--;
 	}
 		
 	return temp;
 }
 
+
+/*
+g_factor:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_factor(vector<TokenLine>& v, int& i)
 {
 	bool temp = false;
@@ -340,26 +393,28 @@ bool g_factor(vector<TokenLine>& v, int& i)
 	return temp;
 }
 
+
+/*
+g_read:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_read(vector<TokenLine>& v, int& i)
 {
 	// code
 	if (v[i].token == READ)
 	{
-		cout << "called" << endl;
 		i++;
 	}
 	else
 		return false;
 	if (v[i].token == LEFTPAREN)
 	{
-		cout << "called" << endl;
 		i++;
 	}
 	else
 		return false;
 	if (g_id_list(v,i))
 	{
-		cout << "called" << endl;
 		if (v[i].token == RIGHTPAREN)
 		{
 			i++;
@@ -372,26 +427,28 @@ bool g_read(vector<TokenLine>& v, int& i)
 		return false;
 }
 
+
+/*
+g_write:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_write(vector<TokenLine>& v, int& i)
 {
 	// code
 	if (v[i].token == WRITE)
 	{
-		cout << "walled" << endl;
 		i++;
 	}
 	else
 		return false;
 	if (v[i].token == LEFTPAREN)
 	{
-		cout << "walled" << endl;
 		i++;
 	}
 	else
 		return false;
 	if (g_id_list(v,i))
 	{
-		cout << "walled" << endl;
 		if (v[i].token == RIGHTPAREN)
 		{
 			i++;
@@ -404,96 +461,97 @@ bool g_write(vector<TokenLine>& v, int& i)
 		return false;
 }
 
+
+/*
+g_for:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_for(vector<TokenLine>& v, int& i)
 {
 	if (v[i].token == FOR)
 	{
 		i++;
-		cout << v[i].token << endl;
 	}
 	else
 		return false;
 	if (g_index_exp(v,i))
-		cout << "go" << endl;
+	{
+		// do nothing
+	}
 	else
 		return false;
 	if (v[i].token == DO)
 	{
 		i++;
-		cout << v[i].token << endl;
 	}
 	else
 	{
-		cout << "For loop " << v[i].token << endl;
 		return false;
 	}
 	if (g_body(v,i))
 	{
-		cout << "Okay it works here" << endl;
 		return true;
 	}
 	else
 	{
-		cout << "Okay something's wrong" << endl;
 		return false;
 	}
 }
 
+
+/*
+g_index_exp:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_index_exp(vector<TokenLine>& v, int& i)
 {
 	if (v[i].token == IDENTIFIER)
 	{
-		cout << v[i].token << endl;
 		i++;
 	}
 	else
 		return false;
 	if (v[i].token == EQUALS)
 	{
-		cout << v[i].token << endl;
 		i++;
 	}
 	else
 		return false;
 	if (g_exp(v,i))
 	{
-		cout << v[i].token << endl;
 		//i++;
 	}
 	else
 		return false;
 	if (v[i].token == TO)
 	{
-		cout << v[i].token << endl;
 		i++;
-		cout << v[i].token << endl;
 	}
 	else
 		return false;
 	if (g_exp(v,i))
 	{
-		cout << "Yay" << endl;
-		cout << v[i].token << endl;
 		return true;
 	}
 	else
 		return false;
 }
 
+
+/*
+g_body:
+- Returns true if the code is in the grammar, otherwise returns false
+*/
 bool g_body(vector<TokenLine>& v, int& i)
 {
 	// code
-	cout << "Aye" << endl;
 	if (v[i].token == BEGIN)
 	{
 		i++;
-		cout << "Aye" << endl;
 		if (g_stmt_list(v,i))
 		{
-			cout << "Aye" << endl;
 			if (v[i].token == END)
 			{
-				cout << "Aye" << endl;
 				return true;
 			}
 		}
